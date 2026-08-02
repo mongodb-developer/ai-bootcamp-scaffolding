@@ -48,6 +48,7 @@ The scaffold ships one working tool per leg (`knowledge_base_search`, `structure
 | The system prompt / persona | `src/agent/prompts.ts` |
 | Your knowledge base documents | `data/sample/kb/` (+ `data/load.ts` if your format differs) |
 | Your structured data | `data/sample/activity_events.ts` (the generator) |
+| Structured data from a schema + a few samples (no export) | `data/mock-input/collection.md`, then Option A in `prompts/phase-1-foundation.md` |
 | How the query tool understands your fields | `src/query/schema.ts` |
 | A new business tool | copy `src/tools/exampleBusinessTool.ts`, then register in `src/tools/registry.ts` |
 | What the agent remembers about a user | `src/tools/memoryTools.ts` + `src/memory/store.ts` |
@@ -70,7 +71,7 @@ Things you should **not** need to touch: `src/llm/model.ts` (the model client), 
 1. Decide your pattern and, if needed, trim `toolsForPattern` in `src/patterns.ts` so your agent exposes only the legs you use.
 2. Put your data in place:
    - **RAG / hybrid:** replace the markdown in `data/sample/kb/` with your documents (policies, runbooks, SOPs). Keep them internal-facing and synthetic-or-approved per the Data Compliance rules.
-   - **Structured / hybrid:** model your collection in `data/sample/activity_events.ts` and generate an internally consistent synthetic dataset. Update the plain-language description in `src/query/schema.ts` so the query tool knows your fields.
+   - **Structured / hybrid:** by default, do not export real records. Fill in `data/mock-input/collection.md` with your schema plus a few hand-authored samples and let Claude Code expand them into a full, internally consistent mock dataset; nothing real leaves its source system, so data-owner sign-off, classification, and security review stay off the critical path. See [`data/mock-input/README.md`](./data/mock-input/README.md) and Option A in the Phase 1 prompts. Either way, the query tool needs the plain-language description in `src/query/schema.ts` updated to match your fields. Only if you already have an approved synthetic export do you load it directly (Option B).
 3. Point env at your collections if you renamed them (`KB_COLLECTION`, `EVENTS_COLLECTION`, `VECTOR_INDEX_NAME`).
 4. Seed and index:
    ```bash

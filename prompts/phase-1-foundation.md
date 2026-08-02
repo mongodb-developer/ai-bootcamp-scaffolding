@@ -30,6 +30,36 @@ After I add the files, guide me through npm run load and confirm the vector inde
 
 ## Prompt (structured / hybrid): model my collection and data
 
+The default for structured teams is **Option A**: bring a schema and a few hand-authored
+samples and let the prompt expand them into a full mock dataset, so no real data ever leaves
+its source system (no export, no data-owner sign-off, no classification or security review on
+the critical path). Use **Option B** only if you already have an approved, exported synthetic
+dataset in hand.
+
+### Option A: generate mock data from your schema and samples (default)
+
+First fill in `data/mock-input/collection.md` (schema, enums, units, consistency rules, the
+verifiable facts your demo must answer, and 3 to 5 hand-authored sample records). Then:
+
+```
+Read data/mock-input/collection.md. Using it as the spec, rewrite
+data/sample/activity_events.ts into a deterministic generator for our collection, modeled
+on the existing bank generator:
+
+1. Keep it deterministic (fixed seed => identical dataset every run) and generate about the
+   volume I specified, drawing realistic values from my fields, enums, and units.
+2. Seed one anchor record for each "verifiable fact" I listed, and ASSERT every one of them
+   plus my consistency rules before returning; if any assertion fails, throw so load stops.
+   Export the expectations so scripts/verify.ts can check them.
+3. Update the plain-language description in src/query/schema.ts to match my fields, types,
+   enums, and units, with guidance on how to answer my common questions.
+4. Update EVENTS_COLLECTION in .env if the collection name differs.
+Keep synthetic data only, and do not touch the model client, credentials, or the graph.
+Run npm run typecheck, then walk me through npm run load.
+```
+
+### Option B: load a dataset I already exported (only if you have one)
+
 ```
 Our structured data is [DESCRIBE: the entity, the key fields and their types, and the
 enum values, e.g. support_tickets with status, priority, assignee, createdAt]. Amounts

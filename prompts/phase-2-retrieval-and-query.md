@@ -21,7 +21,7 @@ section / too generic]. Help me improve retrieval quality:
 Make one change at a time and re-run npm run load only if chunking changed.
 ```
 
-## Prompt (structured): make queries provably correct
+## Prompt (structured): make queries verifiable correct
 
 ```
 Help me make structured_query correct for these sample questions:

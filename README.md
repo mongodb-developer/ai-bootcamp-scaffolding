@@ -1,6 +1,6 @@
 # BuildRel Bootcamp Scaffold
 
-A working starting point for the AI Agent Development Bootcamp. Point it at your own data, add your own tools, and you have a functioning enterprise AI agent on **MongoDB Atlas** in a few hours instead of building the plumbing from scratch. It is built with **LangGraph.js**, with MongoDB as the single data layer for retrieval, structured queries, and agent memory.
+A working starting point for the AI Agent Development Bootcamp. Using your own data (or generating mock data from your schema and samples), add your own tools to build a functioning enterprise AI agent on MongoDB Atlas as the single data layer for retrieval, structured queries, and agent memory.
 
 Out of the box it gives you:
 
@@ -52,6 +52,7 @@ src/
 data/
   sample/kb/               synthetic policy/runbook markdown
   sample/activity_events.ts  deterministic, self-asserting event generator
+  mock-input/              fill-in schema + samples; a prompt expands them into the generator
   load.ts                  chunk + embed + index the KB; insert events; ensure indexes
 scripts/verify.ts          the three-checkpoint acceptance checks
 ```
@@ -156,7 +157,7 @@ On the bootcamp doc's "read-only enforcement and query guardrails" (Learning Obj
 ## Repointing at your own data
 
 1. Set `KB_COLLECTION`, `EVENTS_COLLECTION`, and `VECTOR_INDEX_NAME` in `.env`.
-2. Replace the docs in `data/sample/kb/` and/or the generator in `data/sample/activity_events.ts` with your data.
+2. Replace the docs in `data/sample/kb/` and/or the generator in `data/sample/activity_events.ts` with your data. For structured data, the default is to fill in `data/mock-input/collection.md` (schema + a few hand-authored samples) and let Claude Code expand it into the generator, so no real data leaves its source system; see `data/mock-input/README.md`. Load a real export directly only if you already have an approved synthetic one.
 3. If your Voyage embedding model changes, update `VOYAGE_EMBEDDING_MODEL` and `VOYAGE_EMBEDDING_DIMENSIONS` so the index dimension matches.
 4. Update the plain-language description in `src/query/schema.ts` so the query tool understands your fields.
 5. `npm run load`, then `npm run verify`.
