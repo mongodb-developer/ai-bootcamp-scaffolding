@@ -33,7 +33,7 @@ The scaffold ships one working tool per leg (`knowledge_base_search`, `structure
    cp .env.example .env
    npm install
    ```
-3. Fill in `.env` the `PASSKEY`. The AWS and Voyage keys are minted for you at runtime from the passkey; you do not paste them.
+3. Fill in the `PASSKEY` in `.env`. The AWS and Voyage keys are minted for you at runtime from the passkey; you do not paste them.
 4. Confirm the project compiles:
    ```bash
    npm run typecheck
