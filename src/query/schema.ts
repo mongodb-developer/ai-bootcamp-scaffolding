@@ -56,8 +56,12 @@ Guidance for pipelines:
     timestamp within the current calendar month, sort amount descending.
   - Amounts are integers in minor units; divide by 100 for display only, not in
     the pipeline unless asked.
-  - timestamp is a real BSON Date; compare against Date values or use $expr with
-    date operators, not string comparisons.`;
+  - timestamp is a real BSON Date. A plain string never matches a Date, so write
+    dates as Extended JSON: {"timestamp": {"$gte": {"$date": "2026-08-01T00:00:00Z"}}}
+    For windows relative to now, prefer $$NOW so the query stays correct later:
+    {"$match": {"$expr": {"$gte": ["$timestamp", {"$dateTrunc": {"date": "$$NOW", "unit": "month"}}]}}}
+  - Never assume the data is empty because a date filter returned nothing. Check
+    the filter's types first.`;
 
 /**
  * Return a plain-language description of the target collection for the query

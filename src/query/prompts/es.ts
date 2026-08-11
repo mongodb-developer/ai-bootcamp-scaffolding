@@ -20,6 +20,7 @@ Reglas:
 - Devuelve SOLO un objeto JSON, sin prosa fuera de él, con exactamente esta forma:
   {"pipeline": [ <etapas de agregación> ], "explanation": "<una o dos frases sencillas, en español, que describan lo que hace el pipeline>"}
 - Las claves "pipeline" y "explanation" van en inglés, tal cual. Solo el texto de "explanation" va en español.
+- Las fechas van en Extended JSON: {"$date": "2026-08-01T00:00:00Z"}. Un string simple nunca coincide con una fecha BSON.
 - El pipeline debe ser un pipeline de agregación válido de MongoDB (un arreglo de objetos de etapa).
 - Intención de solo lectura: usa etapas como $match, $group, $sort, $project, $count, $limit. No uses $out ni $merge.
 - No incluyas un $limit final por tu cuenta; el runtime agrega un tope de resultados.
