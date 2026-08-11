@@ -1,6 +1,6 @@
 # BuildRel Bootcamp Scaffold
 
-A working starting point for the AI Agent Development Bootcamp. Using your own data (or generating mock data from your schema and samples), add your own tools to build a functioning enterprise AI agent on MongoDB Atlas as the single data layer for retrieval, structured queries, and agent memory.
+A working starting point for the AI Agent Development Bootcamp. Using your own data (or generating mock data from your schema and samples), add your own tools to build a functioning enterprise AI agent on MongoDB as the single data layer for retrieval, structured queries, and agent memory.
 
 Out of the box it gives you:
 
@@ -61,7 +61,7 @@ scripts/verify.ts          the three-checkpoint acceptance checks
 
 ## Setup
 
-Requires Node 20+ and a MongoDB Atlas cluster with Vector Search.
+Requires Node 20+ and MongoDB with Vector Search: an Atlas cluster, or a local deployment like the one the bootcamp workspace provides.
 
 ```bash
 npm install

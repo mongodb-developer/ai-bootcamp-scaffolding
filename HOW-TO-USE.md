@@ -1,6 +1,6 @@
 # How to Build Your Agent on This Scaffold
 
-A participant guide for the AI Agent Development Bootcamp. You will not start from zero. This scaffold already gives you a working LangGraph agent on MongoDB Atlas: retrieval, structured query, a hybrid example, memory, and a demo CLI. Your job for the day is to point it at your data, write your two to three business tools, and tune it for the problem your team submitted.
+A participant guide for the AI Agent Development Bootcamp. You will not start from zero. This scaffold already gives you a working LangGraph agent on MongoDB: retrieval, structured query, a hybrid example, memory, and a demo CLI. Your job for the day is to point it at your data, write your two to three business tools, and tune it for the problem your team submitted.
 
 You will build with **Claude Code** running in your Instruqt workspace. For every phase there is a set of ready-to-paste prompts in the [`prompts/`](./prompts) folder. Adapt the `[BRACKETED]` parts to your use case.
 
@@ -28,19 +28,20 @@ The scaffold ships one working tool per leg (`knowledge_base_search`, `structure
 
 **Steps**
 
-1. Open a terminal in your Instruqt workspace and confirm you have the passkey your instructor announced.
-2. Create your env file and install:
+1. In the **Claude Code** tab, run `setup-keys.sh` and paste the passkey your instructor shows. It writes `PASSKEY` into `.env`. Your `.env` is already there and already points at the workspace's MongoDB; do not overwrite it.
+2. In the **Console** tab, confirm the project compiles:
    ```bash
-   mv env.example .env.example   # one-time rename; see the note in README.md
-   cp .env.example .env
-   npm install
+   cd /root/bootcamp && npm run typecheck
    ```
-3. Check that `PASSKEY` is set in `.env`. The sandbox setup writes it for you; there is nothing to paste.
-4. Confirm the project compiles:
+3. Smoke-test the shipped sample before you change anything:
    ```bash
-   npm run typecheck
+   npm run load
+   npm run verify
+   npm run dev -- --pattern hybrid --thread demo --user analyst_1 "Is event evt_0051 consistent with dual control?"
    ```
-5. Orient yourself. Read the "Understand the wiring" table below, then optionally ask Claude Code to walk you through it with [`prompts/en/phase-0-orientation.md`](./prompts/en/phase-0-orientation.md).
+4. Orient yourself. Read the "Understand the wiring" table below, then optionally ask Claude Code to walk you through it with [`prompts/en/phase-0-orientation.md`](./prompts/en/phase-0-orientation.md).
+
+> Running this outside the Instruqt workspace? Create your env file first: `mv env.example .env.example`, `cp .env.example .env`, `npm install`, then set `MONGODB_URI` and `PASSKEY` yourself.
 
 **Understand the wiring (where you will edit)**
 
@@ -89,7 +90,7 @@ Things you should **not** need to touch: `src/llm/model.ts` (the model client), 
 
 **Checkpoint 1 gate:** the skeleton runs and answers one sample question. RAG teams get a grounded answer from the knowledge base; structured teams get a correct answer from a query against their collection; hybrid teams get either leg working end to end.
 
-**Verify:** `npm run typecheck` is clean, `npm run load` succeeds, and the `npm run dev` call above returns a sensible answer.
+**Verify:** `npm run typecheck` is clean, `npm run load` succeeds, and the `npm run dev` call above returns a sensible answer. `npm run verify` checks the shipped sample scenario, so its questions stop matching once your own knowledge base is in place; your instructor gates on your own question, not on that script.
 
 ---
 

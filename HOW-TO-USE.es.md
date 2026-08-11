@@ -1,6 +1,6 @@
 # Cómo construir tu agente sobre este scaffold
 
-Guía para participantes del AI Agent Development Bootcamp. No empiezas desde cero. Este scaffold ya te entrega un agente de LangGraph funcionando sobre MongoDB Atlas: recuperación, consulta estructurada, un ejemplo híbrido, memoria y una CLI de demo. Tu trabajo del día es apuntarlo a tus datos, escribir tus dos o tres herramientas de negocio y afinarlo para el problema que propuso tu equipo.
+Guía para participantes del AI Agent Development Bootcamp. No empiezas desde cero. Este scaffold ya te entrega un agente de LangGraph funcionando sobre MongoDB: recuperación, consulta estructurada, un ejemplo híbrido, memoria y una CLI de demo. Tu trabajo del día es apuntarlo a tus datos, escribir tus dos o tres herramientas de negocio y afinarlo para el problema que propuso tu equipo.
 
 Vas a construir con **Claude Code** corriendo en tu workspace de Instruqt. Para cada fase hay un set de prompts listos para pegar en la carpeta [`prompts/es/`](./prompts/es). Adapta las partes entre `[CORCHETES]` a tu caso de uso.
 
@@ -12,7 +12,7 @@ El día tiene tres fases prácticas, cada una terminando en un checkpoint que ve
 
 ## Idioma del agente
 
-El scaffold es bilingüe. `AGENT_LANGUAGE` en `.env` (`en` o `es`) decide qué set de prompts se carga (`src/agent/prompts/en.ts` o `es.ts`) y, por lo tanto, en qué idioma responde el agente, incluidas las explicaciones de sus consultas y los juicios de la herramienta híbrida. El `.env.example` que copias ya viene con `AGENT_LANGUAGE="es"`.
+El scaffold es bilingüe. `AGENT_LANGUAGE` en `.env` (`en` o `es`) decide qué set de prompts se carga (`src/agent/prompts/en.ts` o `es.ts`) y, por lo tanto, en qué idioma responde el agente, incluidas las explicaciones de sus consultas y los juicios de la herramienta híbrida. Tu `.env` ya viene con `AGENT_LANGUAGE="es"`.
 
 Una regla que no se rompe: **se traduce la prosa, nunca los identificadores.** Los nombres de archivo, colecciones, variables de entorno, comandos npm, claves JSON (`pipeline`, `explanation`, `subjectId`, `question`, `citations`, `judgment`) y los tokens de veredicto `CONSISTENT`, `INCONSISTENT` y `NEEDS REVIEW` quedan en inglés en todos los idiomas. `scripts/verify.ts` los busca literalmente: traducirlos rompe la verificación del Checkpoint 3.
 
@@ -36,21 +36,22 @@ El scaffold trae una herramienta funcionando por cada vía (`knowledge_base_sear
 
 **Pasos**
 
-1. Abre una terminal en tu workspace de Instruqt y confirma que tienes el passkey que anunció tu instructor.
-2. Crea tu archivo de entorno e instala:
+1. En la pestaña **Claude Code**, ejecuta `setup-keys.sh` y pega el passkey que muestre tu instructor. El script escribe `PASSKEY` en `.env`. Tu `.env` ya existe y ya apunta al MongoDB del workspace; no lo sobrescribas.
+2. En la pestaña **Console**, confirma que el proyecto compila:
    ```bash
-   mv env.example .env.example   # renombrado de una sola vez; ver la nota en README.md
-   cp .env.example .env
-   npm install
+   cd /root/bootcamp && npm run typecheck
    ```
-3. Verifica que `PASSKEY` esté definido en `.env`. La configuración del sandbox lo escribe por ti; no hay nada que pegar.
-4. Confirma que el proyecto compila:
+3. Prueba el escenario de ejemplo antes de cambiar nada:
    ```bash
-   npm run typecheck
+   npm run load
+   npm run verify
+   npm run dev -- --pattern hybrid --thread demo --user analyst_1 "Is event evt_0051 consistent with dual control?"
    ```
-5. Oriéntate. Lee la tabla "Entiende el cableado" más abajo y, si quieres, pídele a Claude Code que te lo explique con [`prompts/es/phase-0-orientation.md`](./prompts/es/phase-0-orientation.md).
+4. Oriéntate. Lee la tabla "Entiende la estructura" más abajo y, si quieres, pídele a Claude Code que te lo explique con [`prompts/es/phase-0-orientation.md`](./prompts/es/phase-0-orientation.md).
 
-**Entiende el cableado (dónde vas a editar)**
+> ¿Corres esto fuera del workspace de Instruqt? Crea primero tu archivo de entorno: `mv env.example .env.example`, `cp .env.example .env`, `npm install`, y luego define `MONGODB_URI` y `PASSKEY` tú mismo.
+
+**Entiende la estructura (dónde vas a editar)**
 
 | Quieres cambiar... | Edita... |
 |---|---|
@@ -97,7 +98,7 @@ Cosas que **no** deberías necesitar tocar: `src/llm/model.ts` (el cliente del m
 
 **Puerta del Checkpoint 1:** el esqueleto corre y responde una pregunta de muestra. Los equipos RAG obtienen una respuesta fundamentada desde la base de conocimiento; los equipos structured obtienen una respuesta correcta desde una consulta contra su colección; los equipos híbridos tienen cualquiera de las dos vías funcionando de punta a punta.
 
-**Verifica:** `npm run typecheck` limpio, `npm run load` exitoso, y que la llamada a `npm run dev` de arriba devuelva una respuesta sensata.
+**Verifica:** `npm run typecheck` limpio, `npm run load` exitoso, y que la llamada a `npm run dev` de arriba devuelva una respuesta sensata. `npm run verify` comprueba el escenario de ejemplo que viene incluido, así que sus preguntas dejan de aplicar cuando pongas tu propia base de conocimiento; tu instructor evalúa con tu pregunta, no con ese script.
 
 ---
 

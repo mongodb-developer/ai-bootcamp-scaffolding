@@ -1,12 +1,12 @@
 # Prompts de la Fase 0: Orientación
 
-Objetivo: entender cómo está cableado el scaffold y decidir dónde encaja tu agente antes de cambiar nada. Ver [`../../HOW-TO-USE.es.md`](../../HOW-TO-USE.es.md#fase-0-instalación-y-orientación).
+Objetivo: entender cómo está estructurado el scaffold y decidir dónde encaja tu agente antes de cambiar nada. Ver [`../../HOW-TO-USE.es.md`](../../HOW-TO-USE.es.md#fase-0-instalación-y-orientación).
 
 Completa lo que está entre paréntesis y pega el prompt en Claude Code.
 
 ---
 
-## Prompt: explícame el cableado
+## Prompt: explícame la estructura
 
 ```
 Lee context.md, CLAUDE.md y HOW-TO-USE.md. En unas diez líneas, explica cómo funciona este
