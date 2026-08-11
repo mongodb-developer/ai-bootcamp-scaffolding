@@ -12,7 +12,7 @@ El día tiene tres fases prácticas, cada una terminando en un checkpoint que ve
 
 ## Idioma del agente
 
-El scaffold es bilingüe. `AGENT_LANGUAGE` en `.env` (`en` o `es`) decide qué set de prompts se carga (`src/agent/prompts/en.ts` o `es.ts`) y, por lo tanto, en qué idioma responde el agente, incluidas las explicaciones de sus consultas y los juicios de la herramienta híbrida. Tu `.env` ya viene con `AGENT_LANGUAGE="es"`.
+El scaffold es bilingüe. `AGENT_LANGUAGE` en `.env` (`en` o `es`) decide qué set de prompts se carga (`src/agent/prompts/en.ts` o `es.ts`) y, por lo tanto, en qué idioma responde el agente, incluidas las explicaciones de sus consultas y los juicios de la herramienta híbrida. Tu `.env` viene con `AGENT_LANGUAGE="en"`; cámbialo a `"es"` para que el agente te responda en español.
 
 Una regla que no se rompe: **se traduce la prosa, nunca los identificadores.** Los nombres de archivo, colecciones, variables de entorno, comandos npm, claves JSON (`pipeline`, `explanation`, `subjectId`, `question`, `citations`, `judgment`) y los tokens de veredicto `CONSISTENT`, `INCONSISTENT` y `NEEDS REVIEW` quedan en inglés en todos los idiomas. `scripts/verify.ts` los busca literalmente: traducirlos rompe la verificación del Checkpoint 3.
 

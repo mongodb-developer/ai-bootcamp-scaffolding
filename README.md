@@ -112,7 +112,7 @@ The scaffold is bilingual. `AGENT_LANGUAGE` (`en` or `es`) selects which prompt 
 
 Participant-facing material follows the same split: [`HOW-TO-USE.md`](./HOW-TO-USE.md) / [`HOW-TO-USE.es.md`](./HOW-TO-USE.es.md), and the phase prompts in [`prompts/en/`](./prompts/en) / [`prompts/es/`](./prompts/es).
 
-The code default is `en`; the shipped `env.example` sets `es` for the Spanish delivery, so copying it needs no edit.
+The default is `en` in both the code and `env.example`. Set `AGENT_LANGUAGE="es"` for a Spanish delivery.
 
 ## Environment variables
 
@@ -120,7 +120,7 @@ Every variable is documented in `env.example`. The ones you must set: `MONGODB_U
 
 | Variable | Default                              | Purpose |
 |---|--------------------------------------|---|
-| `AGENT_LANGUAGE` | `en` (`es` in `env.example`)         | language of the agent's prompts, and so of its answers (`en` \| `es`) |
+| `AGENT_LANGUAGE` | `en`                                 | language of the agent's prompts, and so of its answers (`en` \| `es`) |
 | `MONGODB_DB` | `bootcamp`                           | DB for collections + checkpoints |
 | `KB_COLLECTION` / `EVENTS_COLLECTION` | `kb_documents` / `activity_events`   | demo collections |
 | `VECTOR_INDEX_NAME` | `vector_index`                       | Atlas Vector Search index |

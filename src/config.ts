@@ -34,10 +34,7 @@ const ConfigSchema = z.object({
   // (src/agent/prompts/), and therefore the language the agent answers in and
   // the language of its query explanations and hybrid judgments. It never
   // changes the JSON contracts or the verdict tokens, which stay English.
-  // The code default is "en" so this repo reads as an English reference; the
-  // shipped env.example sets "es" for the Spanish delivery, so a participant
-  // who copies it gets Spanish without editing anything. That split is
-  // deliberate, not an inconsistency.
+  // Defaults to "en" here and in env.example; a Spanish delivery sets "es".
   AGENT_LANGUAGE: LanguageSchema,
 
   // Long-term memory store (cross-thread, keyed by user). Distinct from the
