@@ -4,7 +4,7 @@ import { structuredQuery } from "./query/queryTool";
 import { assess } from "./hybrid/hybridTool";
 import { remember } from "./tools/memoryTools";
 import type { AgentTool } from "./tools/registry";
-import { RAG_PROMPT, STRUCTURED_PROMPT, HYBRID_PROMPT } from "./agent/prompts";
+import { RAG_PROMPT, STRUCTURED_PROMPT, HYBRID_PROMPT } from "./agent/prompts/index";
 
 /**
  * Pattern selector: wires the right tools and system prompt for each of the

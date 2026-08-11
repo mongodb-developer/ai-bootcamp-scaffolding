@@ -18,7 +18,13 @@ Every team's agent is one of these, and the scaffold supports all three out of t
 
 **Hybrid.** Combines both in one answer: retrieve text context and query structured records, then reason over both. This is the pattern MongoDB is uniquely built for as a single data layer, and the one strong teams are nudged toward. The included hybrid example is the flagship.
 
-`src/patterns.ts` selects the tools and system prompt for each pattern; `src/agent/prompts.ts` holds the per-pattern prompts.
+`src/patterns.ts` selects the tools and system prompt for each pattern; `src/agent/prompts/` holds the per-pattern prompts, one file per language.
+
+## Bilingual prompts
+
+The scaffold ships English and Spanish. `AGENT_LANGUAGE` (`en` | `es`, validated in `src/config.ts`) selects the prompt set, and so the language the agent answers in. Three sites are localised, each a folder of `en.ts` / `es.ts` / `index.ts` whose `index.ts` calls `pickLocalized()` from `src/i18n.ts`: `src/agent/prompts/` (per-pattern personas), `src/query/prompts/` (the pipeline generator, which produces the `explanation`), and `src/hybrid/prompts/` (the `assess` judgment). Participant material mirrors this: `HOW-TO-USE.md` / `HOW-TO-USE.es.md` and `prompts/en/` / `prompts/es/`.
+
+Only prose is translated. Identifiers, JSON keys, MongoDB stage names, the enums and collection description in `src/query/schema.ts`, and the verdict tokens `CONSISTENT` / `INCONSISTENT` / `NEEDS REVIEW` stay English in every language, because code and `scripts/verify.ts` match on them literally.
 
 ## Architecture and the LangGraph runtime
 

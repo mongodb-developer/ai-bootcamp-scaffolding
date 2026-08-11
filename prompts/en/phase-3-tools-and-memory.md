@@ -1,6 +1,6 @@
 # Phase 3 Prompts: Tools, Memory, and Demo (Checkpoint 3)
 
-Goal: your two to three business tools working, memory that improves the experience, and one demo scenario end to end. See [`../HOW-TO-USE.md`](../HOW-TO-USE.md#phase-3-complete-your-agent-checkpoint-3).
+Goal: your two to three business tools working, memory that improves the experience, and one demo scenario end to end. See [`../../HOW-TO-USE.md`](../../HOW-TO-USE.md#phase-3-complete-your-agent-checkpoint-3).
 
 ---
 
@@ -48,9 +48,13 @@ they are tracking].
 ## Prompt: tune the persona and prompt
 
 ```
-Refine the system prompt in src/agent/prompts.ts for our [PATTERN] agent so it speaks to
-[OUR USERS] and always [DESIRED BEHAVIOR: cites sources / states the query it ran / gives
-a verdict]. Keep it concise. Show me the before and after.
+Refine the system prompt for our [PATTERN] agent so it speaks to [OUR USERS] and always
+[DESIRED BEHAVIOR: cites sources / states the query it ran / gives a verdict]. Edit the
+file for the language we are presenting in: src/agent/prompts/en.ts or
+src/agent/prompts/es.ts (AGENT_LANGUAGE in .env selects which one loads). If you change
+one, keep the other equivalent. Translate prose only: leave tool names, JSON keys, and
+the verdict tokens CONSISTENT / INCONSISTENT / NEEDS REVIEW in English. Keep it concise.
+Show me the before and after.
 ```
 
 ## Prompt: rehearse the demo scenario

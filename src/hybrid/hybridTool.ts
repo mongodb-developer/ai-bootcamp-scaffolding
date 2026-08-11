@@ -7,6 +7,7 @@ import { getDb } from "../db/client";
 import { getConfig } from "../config";
 import { retrievePassages, formatPassages } from "../retrieval/retrieverTool";
 import { messageContentToString } from "../util/message";
+import { JUDGMENT_SYSTEM, DEFAULT_QUESTION, LABELS } from "./prompts/index";
 
 /**
  * The hybrid example: `assess`.
@@ -32,9 +33,7 @@ export const assess = tool(
       return `No record found in ${cfg.EVENTS_COLLECTION} with _id "${subjectId}".`;
     }
 
-    const focus =
-      question?.trim() ||
-      "Is this event consistent with the bank's access-governance and dual-control policies?";
+    const focus = question?.trim() || DEFAULT_QUESTION;
 
     // Leg 2: retrieval. Seed the query with the record's salient fields so the
     // most relevant policy passages surface.
@@ -43,17 +42,14 @@ export const assess = tool(
 
     // Fusion: reason over both, cite the passages.
     const model = getChatModel({ temperature: 0 });
-    const system = new SystemMessage(
-      "You assess whether a single operational event is consistent with policy. " +
-        "You are given the event record (structured) and relevant policy passages (retrieved). " +
-        "Ground every claim in the passages and cite them by their [n] label. If the passages do not " +
-        "cover a point, say so rather than inventing policy. End with a one-line verdict: " +
-        "CONSISTENT, INCONSISTENT, or NEEDS REVIEW.",
-    );
+    // Prompt text is localised (src/hybrid/prompts/); the verdict tokens it asks
+    // for are not. CONSISTENT / INCONSISTENT / NEEDS REVIEW are enum-like values
+    // that scripts/verify.ts matches on, so they stay uppercase English.
+    const system = new SystemMessage(JUDGMENT_SYSTEM);
     const human = new HumanMessage(
-      `EVENT RECORD (from ${cfg.EVENTS_COLLECTION}):\n${JSON.stringify(record, null, 2)}\n\n` +
-        `POLICY PASSAGES:\n${formatPassages(passages)}\n\n` +
-        `QUESTION: ${focus}`,
+      `${LABELS.record(cfg.EVENTS_COLLECTION)}\n${JSON.stringify(record, null, 2)}\n\n` +
+        `${LABELS.passages}\n${formatPassages(passages)}\n\n` +
+        `${LABELS.question} ${focus}`,
     );
     const res = await model.invoke([system, human]);
     const judgment = messageContentToString(res.content);

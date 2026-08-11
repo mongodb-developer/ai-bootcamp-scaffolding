@@ -5,7 +5,7 @@ import { z } from "zod";
 import { getChatModel } from "../llm/model";
 import { getDb } from "../db/client";
 import { getConfig } from "../config";
-import { describeCollection } from "./schema";
+import { buildSystemPrompt } from "./prompts/index";
 import { messageContentToString, extractJsonObject } from "../util/message";
 
 /**
@@ -25,24 +25,13 @@ import { messageContentToString, extractJsonObject } from "../util/message";
 
 type Stage = Record<string, unknown>;
 
+// The generator prompt is localised (src/query/prompts/), but these two keys are
+// the contract between the model and this schema and stay English in every
+// language. Only the explanation's text is translated.
 const PlanSchema = z.object({
   pipeline: z.array(z.record(z.string(), z.unknown())),
   explanation: z.string().default(""),
 });
-
-function buildSystemPrompt(collection: string): string {
-  return `You translate a user's question into ONE read-only MongoDB aggregation pipeline for the target collection, then explain it.
-
-${describeCollection(collection)}
-
-Rules:
-- Output ONLY a JSON object, no prose outside it, shaped exactly:
-  {"pipeline": [ <aggregation stages> ], "explanation": "<one or two plain sentences describing what the pipeline does>"}
-- The pipeline must be a valid MongoDB aggregation pipeline (an array of stage objects).
-- Read-only intent: use stages like $match, $group, $sort, $project, $count, $limit. Do not use $out or $merge.
-- Do not include a final $limit yourself; the runtime adds a result cap.
-- Prefer returning the specific fields that answer the question.`;
-}
 
 async function generatePlan(question: string, collection: string): Promise<{ pipeline: Stage[]; explanation: string }> {
   const model = getChatModel({ temperature: 0 });

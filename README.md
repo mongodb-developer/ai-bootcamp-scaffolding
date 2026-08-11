@@ -47,7 +47,9 @@ src/
   hybrid/hybridTool.ts     assess (fusion)
   tools/registry.ts        register your tools here (+ exampleBusinessTool.ts)
   tools/memoryTools.ts     remember (writes long-term memory)
-  agent/                   per-pattern prompts + the LangGraph graph
+  agent/prompts/           per-pattern system prompts, en.ts / es.ts / index.ts
+  agent/graph.ts           the LangGraph graph
+  i18n.ts                  pickLocalized(): one way to select the language set
   patterns.ts              selects tools + prompt per pattern
 data/
   sample/kb/               synthetic policy/runbook markdown
@@ -98,18 +100,33 @@ The Lambda's `completion` task is deliberately **not** used. If a provider's key
 
 The chat model is reached through **AWS Bedrock** via `ChatBedrockConverse`, implemented only in `src/llm/model.ts`. No other module imports a model-provider SDK.
 
+## Language (English / Spanish)
+
+The scaffold is bilingual. `AGENT_LANGUAGE` (`en` or `es`) selects which prompt set loads, and therefore the language the agent answers in, including `structured_query`'s `explanation` and the hybrid `assess` judgment. Three prompt sites are localised, each as a folder of `en.ts` / `es.ts` / `index.ts`, with `index.ts` calling `pickLocalized()` from `src/i18n.ts`:
+
+- `src/agent/prompts/` — the per-pattern system prompts
+- `src/query/prompts/` — the aggregation-pipeline generator prompt
+- `src/hybrid/prompts/` — the `assess` judgment prompt
+
+**Translate prose only.** Identifiers, file paths, collection and env var names, npm commands, JSON keys (`pipeline`, `explanation`, `subjectId`, `question`, `citations`, `judgment`), MongoDB stage names, and the enums in `src/query/schema.ts` stay English in every language. So do the three verdict tokens `CONSISTENT`, `INCONSISTENT`, `NEEDS REVIEW`: they are enum-like values that `scripts/verify.ts` matches with a regex, so translating them breaks Checkpoint 3. The collection description in `src/query/schema.ts` also stays English on purpose (see the comment there).
+
+Participant-facing material follows the same split: [`HOW-TO-USE.md`](./HOW-TO-USE.md) / [`HOW-TO-USE.es.md`](./HOW-TO-USE.es.md), and the phase prompts in [`prompts/en/`](./prompts/en) / [`prompts/es/`](./prompts/es).
+
+The code default is `en`; the shipped `env.example` sets `es` for the Spanish delivery, so copying it needs no edit.
+
 ## Environment variables
 
 Every variable is documented in `env.example`. The ones you must set: `MONGODB_URI` and `PASSKEY` (unless you supply your own keys). Notable defaults:
 
 | Variable | Default                              | Purpose |
 |---|--------------------------------------|---|
+| `AGENT_LANGUAGE` | `en` (`es` in `env.example`)         | language of the agent's prompts, and so of its answers (`en` \| `es`) |
 | `MONGODB_DB` | `bootcamp`                           | DB for collections + checkpoints |
 | `KB_COLLECTION` / `EVENTS_COLLECTION` | `kb_documents` / `activity_events`   | demo collections |
 | `VECTOR_INDEX_NAME` | `vector_index`                       | Atlas Vector Search index |
 | `BEDROCK_REGION` | `us-west-2`                          | Bedrock region (try `us-east-1` if invoke fails) |
 | `BEDROCK_MODEL_ID` | `global.anthropic.claude-sonnet-4-6` | chat model |
-| `VOYAGE_EMBEDDING_MODEL` / `VOYAGE_EMBEDDING_DIMENSIONS` | `voyage-3-large` / `1024`            | embeddings; dims MUST match the index |
+| `VOYAGE_EMBEDDING_MODEL` / `VOYAGE_EMBEDDING_DIMENSIONS` | `voyage-4-large` / `1024`            | embeddings; dims MUST match the index |
 | `VOYAGE_RERANK_MODEL` | `rerank-2.5`                         | reranking |
 | `RETRIEVAL_TOP_K` / `RERANK_TOP_K` | `10` / `4`                           | candidates fetched / kept |
 | `QUERY_RESULT_CAP` / `QUERY_MAX_TIME_MS` | `50` / `5000`                        | query-tool ergonomics (not security) |

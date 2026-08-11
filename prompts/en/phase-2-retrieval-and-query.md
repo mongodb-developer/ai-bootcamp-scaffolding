@@ -1,6 +1,6 @@
 # Phase 2 Prompts: Intelligent Retrieval and Querying (Checkpoint 2)
 
-Goal: correct, evidence-backed results for your sample queries. See [`../HOW-TO-USE.md`](../HOW-TO-USE.md#phase-2-intelligent-retrieval-and-querying-checkpoint-2).
+Goal: correct, evidence-backed results for your sample queries. See [`../../HOW-TO-USE.md`](../../HOW-TO-USE.md#phase-2-intelligent-retrieval-and-querying-checkpoint-2).
 
 Use the prompts for your pattern. Verify with `npm run verify` and spot-checks via `npm run dev`.
 
@@ -18,6 +18,12 @@ section / too generic]. Help me improve retrieval quality:
 3. Confirm every returned passage keeps a source and section citation, and that the
    reranked order puts the most relevant passage first for these questions:
    [LIST 2-3 SAMPLE QUESTIONS].
+4. Before tuning numbers further, tell me whether a different Voyage capability would fix
+   this outright: contextualized chunk embeddings (voyage-context-4) if the losing
+   passages depend on context outside their own chunk, a domain model (voyage-code-3,
+   voyage-law-2, voyage-finance-2) if our vocabulary is specialized, rerank-2.5 with an
+   instruction if the ordering is close but wrong, or rerank-2.5-lite if reranking is our
+   latency cost. Say which one you would pick for our corpus and why.
 Make one change at a time and re-run npm run load only if chunking changed.
 ```
 

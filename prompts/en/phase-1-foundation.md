@@ -1,6 +1,6 @@
 # Phase 1 Prompts: Foundation (Checkpoint 1)
 
-Goal: the skeleton runs and answers one sample question from your data. See [`../HOW-TO-USE.md`](../HOW-TO-USE.md#phase-1-foundation-checkpoint-1).
+Goal: the skeleton runs and answers one sample question from your data. See [`../../HOW-TO-USE.md`](../../HOW-TO-USE.md#phase-1-foundation-checkpoint-1).
 
 Work in small steps. After each change, run `npm run typecheck`, and after data changes, `npm run load`.
 
@@ -24,7 +24,20 @@ runbooks about VPN and access issues]. I will put the files in data/sample/kb/.
 2. Review how data/load.ts chunks documents and adjust it if our structure needs it
    (we want one chunk per [SECTION / HEADING / OTHER], with source and section metadata
    for citations).
-3. Keep everything synthetic or approved for the event per the Data Compliance rules.
+3. Our chunks lose meaning without their surrounding document ("the threshold" in a
+   section that never repeats what it applies to). Tell me whether contextual chunking
+   with Voyage's contextualized chunk embeddings (voyage-context-4, via the
+   /contextualizedembeddings endpoint, which embeds each chunk aware of the whole
+   document) would measurably help our corpus, or whether plain voyage-4-large is enough
+   here. If it helps, show me what changes in src/retrieval/embeddings.ts and
+   data/load.ts, and confirm VOYAGE_EMBEDDING_DIMENSIONS still matches the vector index.
+4. Point out any other Voyage or MongoDB Atlas capability that fits our data better than
+   the defaults: a domain-specific embedding model (voyage-code-3 for code, voyage-law-2,
+   voyage-finance-2), voyage-multimodal-3.5 if our documents carry diagrams or scanned
+   pages (text and images share one vector space, so we can retrieve both with one
+   query), or Atlas Search / hybrid search alongside vector search. Recommend one, with
+   the trade-off in a line; do not change models without telling me why.
+5. Keep everything synthetic or approved for the event per the Data Compliance rules.
 After I add the files, guide me through npm run load and confirm the vector index builds.
 ```
 

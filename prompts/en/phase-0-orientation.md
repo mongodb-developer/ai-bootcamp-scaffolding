@@ -1,6 +1,6 @@
 # Phase 0 Prompts: Orientation
 
-Goal: understand the scaffold's wiring and decide where your agent fits before you change anything. See [`../HOW-TO-USE.md`](../HOW-TO-USE.md#phase-0-setup-and-orientation).
+Goal: understand the scaffold's wiring and decide where your agent fits before you change anything. See [`../../HOW-TO-USE.md`](../../HOW-TO-USE.md#phase-0-setup-and-orientation).
 
 Fill in the brackets, then paste into Claude Code.
 

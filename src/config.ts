@@ -28,6 +28,16 @@ const ConfigSchema = z.object({
   EVENTS_COLLECTION: z.string().min(1).default("activity_events"),
   VECTOR_INDEX_NAME: z.string().min(1).default("vector_index"),
 
+  // Presentation language. Selects which set of agent prompts is loaded
+  // (src/agent/prompts/), and therefore the language the agent answers in and
+  // the language of its query explanations and hybrid judgments. It never
+  // changes the JSON contracts or the verdict tokens, which stay English.
+  // The code default is "en" so this repo reads as an English reference; the
+  // shipped env.example sets "es" for the Spanish delivery, so a participant
+  // who copies it gets Spanish without editing anything. That split is
+  // deliberate, not an inconsistency.
+  AGENT_LANGUAGE: z.enum(["en", "es"]).default("en"),
+
   // Long-term memory store (cross-thread, keyed by user). Distinct from the
   // per-thread checkpointer. MEMORY_TTL_SECONDS = 0 disables expiry.
   MEMORY_COLLECTION: z.string().min(1).default("agent_memory"),
@@ -45,7 +55,7 @@ const ConfigSchema = z.object({
   // Voyage embeddings + reranking
   VOYAGE_API_KEY: z.string().min(1, "VOYAGE_API_KEY missing: run the credential bootstrap or set it manually"),
   VOYAGE_API_BASE: z.string().url().default("https://api.voyageai.com/v1"),
-  VOYAGE_EMBEDDING_MODEL: z.string().min(1).default("voyage-3-large"),
+  VOYAGE_EMBEDDING_MODEL: z.string().min(1).default("voyage-4-large"),
   VOYAGE_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1024),
   VOYAGE_RERANK_MODEL: z.string().min(1).default("rerank-2.5"),
 

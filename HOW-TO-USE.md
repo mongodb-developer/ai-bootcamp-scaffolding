@@ -4,6 +4,8 @@ A participant guide for the AI Agent Development Bootcamp. You will not start fr
 
 You will build with **Claude Code** running in your Instruqt workspace. For every phase there is a set of ready-to-paste prompts in the [`prompts/`](./prompts) folder. Adapt the `[BRACKETED]` parts to your use case.
 
+**¿Prefieres español?** Esta guía también está en [`HOW-TO-USE.es.md`](./HOW-TO-USE.es.md), y los prompts de cada fase están en [`prompts/es/`](./prompts/es). The scaffold ships bilingual: set `AGENT_LANGUAGE=es` in `.env` and the agent answers in Spanish.
+
 The day has three hands-on phases, each ending at a checkpoint an instructor verifies. This guide is organized the same way, plus a short setup step and demo prep at the end.
 
 ---
@@ -38,20 +40,21 @@ The scaffold ships one working tool per leg (`knowledge_base_search`, `structure
    ```bash
    npm run typecheck
    ```
-5. Orient yourself. Read the "Understand the wiring" table below, then optionally ask Claude Code to walk you through it with [`prompts/phase-0-orientation.md`](./prompts/phase-0-orientation.md).
+5. Orient yourself. Read the "Understand the wiring" table below, then optionally ask Claude Code to walk you through it with [`prompts/en/phase-0-orientation.md`](./prompts/en/phase-0-orientation.md).
 
 **Understand the wiring (where you will edit)**
 
 | You want to change... | Edit... |
 |---|---|
 | Which pattern and tools run | `src/patterns.ts` |
-| The system prompt / persona | `src/agent/prompts.ts` |
+| The system prompt / persona | `src/agent/prompts/` |
 | Your knowledge base documents | `data/sample/kb/` (+ `data/load.ts` if your format differs) |
 | Your structured data | `data/sample/activity_events.ts` (the generator) |
-| Structured data from a schema + a few samples (no export) | `data/mock-input/collection.md`, then Option A in `prompts/phase-1-foundation.md` |
+| Structured data from a schema + a few samples (no export) | `data/mock-input/collection.md`, then Option A in `prompts/en/phase-1-foundation.md` |
 | How the query tool understands your fields | `src/query/schema.ts` |
 | A new business tool | copy `src/tools/exampleBusinessTool.ts`, then register in `src/tools/registry.ts` |
 | What the agent remembers about a user | `src/tools/memoryTools.ts` + `src/memory/store.ts` |
+| The language the agent answers in | `AGENT_LANGUAGE` in `.env` (`en` or `es`), which selects `src/agent/prompts/en.ts` or `es.ts` |
 | Collection names, retrieval/query tuning | `.env` (see `README.md` variable table) |
 
 Things you should **not** need to touch: `src/llm/model.ts` (the model client), `src/credentials.ts`, `src/db/client.ts`, `src/agent/graph.ts`. The invariants in `CLAUDE.md` still apply to your build; Claude Code will follow them.
@@ -82,7 +85,7 @@ Things you should **not** need to touch: `src/llm/model.ts` (the model client), 
    npm run dev -- --pattern <your-pattern> --thread demo --user me "your sample question"
    ```
 
-**Build it with Claude Code:** [`prompts/phase-1-foundation.md`](./prompts/phase-1-foundation.md)
+**Build it with Claude Code:** [`prompts/en/phase-1-foundation.md`](./prompts/en/phase-1-foundation.md)
 
 **Checkpoint 1 gate:** the skeleton runs and answers one sample question. RAG teams get a grounded answer from the knowledge base; structured teams get a correct answer from a query against their collection; hybrid teams get either leg working end to end.
 
@@ -102,7 +105,7 @@ Things you should **not** need to touch: `src/llm/model.ts` (the model client), 
 - **Structured:** make answers provably correct. Sharpen the description in `src/query/schema.ts` (field meanings, units, the enum values) so the model writes good pipelines. Your synthetic data must be internally consistent: the record you call "largest this month" must actually be the largest, and totals must add up. The tool returns the records, a plain-language explanation, and the pipeline it ran; use the explanation to confirm the query is doing what you expect.
 - **Hybrid:** get both legs contributing and reconciled in one answer. Use `assess` as the template for fusing a record lookup with retrieved text.
 
-**Build it with Claude Code:** [`prompts/phase-2-retrieval-and-query.md`](./prompts/phase-2-retrieval-and-query.md)
+**Build it with Claude Code:** [`prompts/en/phase-2-retrieval-and-query.md`](./prompts/en/phase-2-retrieval-and-query.md)
 
 **Checkpoint 2 gate:** retrieval returns reranked, relevant, cited passages; `structured_query` returns the correct records for your sample questions with its explanation; hybrid shows both legs contributing.
 
@@ -114,16 +117,16 @@ Things you should **not** need to touch: `src/llm/model.ts` (the model client), 
 
 **Goal:** your two to three business tools working, memory that improves the experience, and one demo scenario running end to end.
 
-**What you'll edit:** new files under `src/tools/`, `src/tools/registry.ts`, `src/patterns.ts`, `src/agent/prompts.ts`, optionally `src/tools/memoryTools.ts`.
+**What you'll edit:** new files under `src/tools/`, `src/tools/registry.ts`, `src/patterns.ts`, `src/agent/prompts/`, optionally `src/tools/memoryTools.ts`.
 
 **Steps**
 
 1. **Add your business tools.** Copy `src/tools/exampleBusinessTool.ts` for each new tool, give it a clear `name`, `description`, and zod `schema`, and implement the logic (use `getDb()`, `getChatModel()`, `retrievePassages()` as needed). Register each in `src/tools/registry.ts` and add it to your pattern in `src/patterns.ts`. Keep it to two to three simple tools; the `description` is how the model decides when to call it, so be concrete.
 2. **Wire memory.** Short-term memory already works: the same `--thread` resumes a conversation. For long-term memory that spans conversations, use the `remember` tool and decide what is worth keeping about a user (their team, role, preferences, or ids of records they care about). Follow the reference discipline: store references and lightweight context, never raw record contents. Same `--user` with a new `--thread` should carry that context over.
-3. **Tune the prompt** in `src/agent/prompts.ts` so the agent's persona and instructions fit your users.
+3. **Tune the prompt** in `src/agent/prompts/` so the agent's persona and instructions fit your users. Edit the file for the language you present in (`en.ts` or `es.ts`). Translate prose only: tool names, JSON keys, and the verdict tokens `CONSISTENT` / `INCONSISTENT` / `NEEDS REVIEW` stay in English, because `scripts/verify.ts` matches on them.
 4. **Run your demo scenario** end to end with `npm run dev`, exactly as you will show it.
 
-**Build it with Claude Code:** [`prompts/phase-3-tools-and-memory.md`](./prompts/phase-3-tools-and-memory.md)
+**Build it with Claude Code:** [`prompts/en/phase-3-tools-and-memory.md`](./prompts/en/phase-3-tools-and-memory.md)
 
 **Checkpoint 3 gate:** at least two tools working, memory persisting across sessions (same `thread_id` resumes; same `user_id` recalls across threads), and one demo scenario running end to end.
 

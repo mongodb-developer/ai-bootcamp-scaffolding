@@ -5,6 +5,13 @@
  *
  * The enums here are the single source of truth, imported by the synthetic data
  * generator so the data and the description never drift.
+ *
+ * BILINGUAL NOTE: this description stays in English in every language, on
+ * purpose, not by oversight. It is almost entirely field names, enum values, and
+ * pipeline guidance; models read it fine cross-lingually, and translating it
+ * would risk drifting against the generator that imports these enums. Only the
+ * surrounding prompt prose in src/query/prompts/ is localised, which is enough
+ * to get a Spanish `explanation` back.
  */
 
 export const ACTION_TYPES = [
