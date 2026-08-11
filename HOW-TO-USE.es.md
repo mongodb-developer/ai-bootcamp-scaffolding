@@ -43,7 +43,7 @@ El scaffold trae una herramienta funcionando por cada vía (`knowledge_base_sear
    cp .env.example .env
    npm install
    ```
-3. Completa el `PASSKEY` en `.env`. Las llaves de AWS y Voyage se generan por ti en tiempo de ejecución a partir del passkey; no las pegas tú.
+3. Verifica que `PASSKEY` esté definido en `.env`. La configuración del sandbox lo escribe por ti; no hay nada que pegar.
 4. Confirma que el proyecto compila:
    ```bash
    npm run typecheck
@@ -168,7 +168,7 @@ npm run dev -- --pattern <rag|structured|hybrid> --thread <id> --user <id> "preg
 
 **Solución de problemas**
 
-- **`401` en el paso de credenciales:** tu passkey expiró (rotan más o menos cada tres días). Pide uno nuevo a tu instructor y vuelve a ejecutar.
+- **`401` en el paso de credenciales:** tu passkey expiró. Vuelve a ejecutar el script setup-keys para escribir uno nuevo en `.env`.
 - **La invocación de Bedrock falla por región o modelo:** prueba `BEDROCK_REGION=us-east-1` en `.env`; el perfil global del modelo enruta entre regiones.
 - **La búsqueda vectorial no devuelve nada justo después de la carga:** el índice todavía se está construyendo. `npm run load` lo espera, pero si creaste los datos por otra vía, dale un minuto al índice.
 - **`403` de Voyage, "This API key cannot access this endpoint":** la llave y el host son de familias distintas. El passkey genera una llave de modelo de Atlas (`al-...`), que solo funciona contra `https://ai.mongodb.com/v1`, el valor por defecto de `VOYAGE_API_BASE` en el scaffold. Ponlo en `https://api.voyageai.com/v1` solo si trajiste tu propia llave de Voyage (`pa-...`).

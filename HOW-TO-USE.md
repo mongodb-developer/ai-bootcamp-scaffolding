@@ -35,7 +35,7 @@ The scaffold ships one working tool per leg (`knowledge_base_search`, `structure
    cp .env.example .env
    npm install
    ```
-3. Fill in the `PASSKEY` in `.env`. The AWS and Voyage keys are minted for you at runtime from the passkey; you do not paste them.
+3. Check that `PASSKEY` is set in `.env`. The sandbox setup writes it for you; there is nothing to paste.
 4. Confirm the project compiles:
    ```bash
    npm run typecheck
@@ -160,7 +160,7 @@ npm run dev -- --pattern <rag|structured|hybrid> --thread <id> --user <id> "ques
 
 **Troubleshooting**
 
-- **`401` from the credential step:** your passkey expired (they roll about every three days). Get a fresh one from your instructor and re-run.
+- **`401` from the credential step:** your passkey expired. Re-run the setup-keys script to write a fresh one into `.env`.
 - **Bedrock invoke fails on region/model:** try `BEDROCK_REGION=us-east-1` in `.env`; the global model profile routes cross-region.
 - **Vector search returns nothing right after load:** the index is still building. `npm run load` waits for it, but if you created data another way, give the index a minute.
 - **`403` from Voyage, "This API key cannot access this endpoint":** the key and the host are from different families. The passkey mints an Atlas model API key (`al-...`), which works only against `https://ai.mongodb.com/v1`, the scaffold's default `VOYAGE_API_BASE`. Set it to `https://api.voyageai.com/v1` only if you supplied your own Voyage key (`pa-...`).
