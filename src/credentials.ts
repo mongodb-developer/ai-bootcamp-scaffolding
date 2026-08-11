@@ -23,7 +23,7 @@ import { config as loadEnv } from "dotenv";
  * the bootstrap can never silently overwrite a value that came from .env.
  */
 
-loadEnv();
+loadEnv({ quiet: true });
 
 /** Providers this scaffold knows how to mint, and the env keys each returns. */
 const PROVIDER_KEYS = {
@@ -65,6 +65,7 @@ export async function bootstrapCredentials(
 
   const url = process.env.LAMBDA_CREDENTIALS_URL?.trim() || DEFAULT_LAMBDA_URL;
 
+  const skipped: string[] = [];
   for (const provider of missing) {
     const token = await fetchToken(url, passkey, provider);
 
@@ -72,22 +73,21 @@ export async function bootstrapCredentials(
     // missing, so an existing value always wins: a key you exported yourself,
     // and any config the Lambda may return alongside the credentials, which
     // would otherwise silently override .env at runtime.
-    const applied: string[] = [];
-    const skipped: string[] = [];
     for (const [key, value] of Object.entries(token)) {
       if (process.env[key]?.trim()) {
         skipped.push(key);
         continue;
       }
       process.env[key] = value;
-      applied.push(key);
     }
+  }
 
-    // Report which keys were set, never the values.
-    console.error(`[credentials] minted ${provider} -> ${applied.join(", ") || "(nothing new)"}`);
-    if (skipped.length > 0) {
-      console.error(`[credentials] kept existing ${skipped.join(", ")} (env wins over the Lambda)`);
-    }
+  // One line, no key names and never any values. The exception is worth saying
+  // out loud: a key the environment already held, which the Lambda did not
+  // replace, is the kind of thing that makes a stale credential look like a bug.
+  console.error("Credentials minted.");
+  if (skipped.length > 0) {
+    console.error(`Kept existing ${skipped.join(", ")} from the environment.`);
   }
 
   bootstrapped = true;

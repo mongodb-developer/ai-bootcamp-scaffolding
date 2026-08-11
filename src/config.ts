@@ -12,7 +12,9 @@ import { z } from "zod";
  * than at import time: the credential bootstrap must run first.
  */
 
-loadEnv();
+// quiet: dotenv's default banner prints on every run, twice (credentials.ts
+// loads too), and says nothing a participant needs.
+loadEnv({ quiet: true });
 
 const booleanish = z
   .string()
