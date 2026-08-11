@@ -126,6 +126,7 @@ Every variable is documented in `env.example`. The ones you must set: `MONGODB_U
 | `VECTOR_INDEX_NAME` | `vector_index`                       | Atlas Vector Search index |
 | `BEDROCK_REGION` | `us-west-2`                          | Bedrock region (try `us-east-1` if invoke fails) |
 | `BEDROCK_MODEL_ID` | `global.anthropic.claude-sonnet-4-6` | chat model |
+| `VOYAGE_API_BASE` | `https://ai.mongodb.com/v1`          | host for embeddings + reranking; matches the Atlas `al-` key the Lambda mints. Use `https://api.voyageai.com/v1` only with your own Voyage `pa-` key |
 | `VOYAGE_EMBEDDING_MODEL` / `VOYAGE_EMBEDDING_DIMENSIONS` | `voyage-4-large` / `1024`            | embeddings; dims MUST match the index |
 | `VOYAGE_RERANK_MODEL` | `rerank-2.5`                         | reranking |
 | `RETRIEVAL_TOP_K` / `RERANK_TOP_K` | `10` / `4`                           | candidates fetched / kept |

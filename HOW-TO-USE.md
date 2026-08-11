@@ -163,6 +163,7 @@ npm run dev -- --pattern <rag|structured|hybrid> --thread <id> --user <id> "ques
 - **`401` from the credential step:** your passkey expired (they roll about every three days). Get a fresh one from your instructor and re-run.
 - **Bedrock invoke fails on region/model:** try `BEDROCK_REGION=us-east-1` in `.env`; the global model profile routes cross-region.
 - **Vector search returns nothing right after load:** the index is still building. `npm run load` waits for it, but if you created data another way, give the index a minute.
+- **`403` from Voyage, "This API key cannot access this endpoint":** the key and the host are from different families. The passkey mints an Atlas model API key (`al-...`), which works only against `https://ai.mongodb.com/v1`, the scaffold's default `VOYAGE_API_BASE`. Set it to `https://api.voyageai.com/v1` only if you supplied your own Voyage key (`pa-...`).
 - **Embedding dimension error:** `VOYAGE_EMBEDDING_DIMENSIONS` must match your `VOYAGE_EMBEDDING_MODEL`. If you change the model, re-load so the index is rebuilt at the right dimension.
 - **Query tool posture:** the query tool is read-oriented with a result cap and timeout for demo smoothness. Building real read-only enforcement and guardrails is a productization topic (see `README.md`); it is not required for the checkpoints.
 

@@ -18,7 +18,9 @@ import { config as loadEnv } from "dotenv";
  * Design note: if a provider's keys are already present in the environment
  * (e.g. a developer exported their own, or a prior call in this process already
  * minted them), we skip that provider. This keeps the bootstrap idempotent and
- * lets someone bypass the passkey entirely by supplying their own keys.
+ * lets someone bypass the passkey entirely by supplying their own keys. The
+ * same rule applies per key: whatever is already in the environment wins, so
+ * the bootstrap can never silently overwrite a value that came from .env.
  */
 
 loadEnv();
@@ -65,11 +67,27 @@ export async function bootstrapCredentials(
 
   for (const provider of missing) {
     const token = await fetchToken(url, passkey, provider);
+
+    // Fill gaps only. The bootstrap exists to supply what the environment is
+    // missing, so an existing value always wins: a key you exported yourself,
+    // and any config the Lambda may return alongside the credentials, which
+    // would otherwise silently override .env at runtime.
+    const applied: string[] = [];
+    const skipped: string[] = [];
     for (const [key, value] of Object.entries(token)) {
+      if (process.env[key]?.trim()) {
+        skipped.push(key);
+        continue;
+      }
       process.env[key] = value;
+      applied.push(key);
     }
-    // Report which provider was minted, never the values.
-    console.error(`[credentials] minted ${provider} -> ${Object.keys(token).join(", ")}`);
+
+    // Report which keys were set, never the values.
+    console.error(`[credentials] minted ${provider} -> ${applied.join(", ") || "(nothing new)"}`);
+    if (skipped.length > 0) {
+      console.error(`[credentials] kept existing ${skipped.join(", ")} (env wins over the Lambda)`);
+    }
   }
 
   bootstrapped = true;

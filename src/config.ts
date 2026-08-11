@@ -54,7 +54,12 @@ const ConfigSchema = z.object({
 
   // Voyage embeddings + reranking
   VOYAGE_API_KEY: z.string().min(1, "VOYAGE_API_KEY missing: run the credential bootstrap or set it manually"),
-  VOYAGE_API_BASE: z.string().url().default("https://api.voyageai.com/v1"),
+  // Two key families, two hosts. The bootcamp's credential Lambda mints an
+  // Atlas model API key ("al-..."), which only authenticates against
+  // ai.mongodb.com. A key created directly with Voyage ("pa-...") only
+  // authenticates against api.voyageai.com; set VOYAGE_API_BASE to
+  // https://api.voyageai.com/v1 if you bring your own Voyage key.
+  VOYAGE_API_BASE: z.string().url().default("https://ai.mongodb.com/v1"),
   VOYAGE_EMBEDDING_MODEL: z.string().min(1).default("voyage-4-large"),
   VOYAGE_EMBEDDING_DIMENSIONS: z.coerce.number().int().positive().default(1024),
   VOYAGE_RERANK_MODEL: z.string().min(1).default("rerank-2.5"),
