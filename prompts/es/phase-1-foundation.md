@@ -72,8 +72,9 @@ tomando como modelo el generador bancario existente:
    lanza un error para que la carga se detenga. Exporta las expectations para que
    scripts/verify.ts pueda revisarlas.
 3. Actualiza la descripción en lenguaje natural de src/query/schema.ts para que coincida con
-   mis campos, tipos, enums y unidades, con guía sobre cómo responder mis preguntas
-   frecuentes. Deja esa descripción en inglés: es una ayuda de prompt llena de nombres de
+   mis campos, tipos, enums y unidades. Sigue la lista de cinco puntos del comentario al
+   inicio de ese archivo; las trampas y la guía de pregunta-a-campo pesan más que la lista
+   de campos. Deja esa descripción en inglés: es una ayuda de prompt llena de nombres de
    campo.
 4. Actualiza EVENTS_COLLECTION en .env si el nombre de la colección es distinto.
 Usa solo datos sintéticos, y no toques el cliente del modelo, las credenciales ni el grafo.
@@ -92,8 +93,9 @@ montos o cantidades están en [UNIDADES].
    llamaremos "[TU SUPERLATIVO, p. ej. el ticket abierto más antiguo]" realmente lo es, y que
    los totales cuadran). Exporta las expectations que el script de verificación pueda revisar.
 2. Actualiza la descripción en lenguaje natural de src/query/schema.ts para que coincida con
-   nuestros campos, tipos y enums, con guía sobre cómo responder nuestras preguntas
-   frecuentes. Deja esa descripción en inglés: es una ayuda de prompt llena de nombres de campo.
+   nuestros campos, tipos y enums. Sigue la lista de cinco puntos del comentario al inicio
+   de ese archivo; las trampas y la guía de pregunta-a-campo pesan más que la lista de
+   campos. Deja esa descripción en inglés: es una ayuda de prompt llena de nombres de campo.
 3. Actualiza EVENTS_COLLECTION en .env si le cambiamos el nombre.
 Ejecuta npm run typecheck y luego guíame por npm run load.
 ```

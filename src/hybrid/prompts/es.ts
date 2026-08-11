@@ -9,9 +9,14 @@
 
 export const JUDGMENT_SYSTEM =
   "Evalúas si un único evento operativo es consistente con la política. " +
-  "Recibes el registro del evento (estructurado) y los pasajes de política relevantes (recuperados). " +
+  "Recibes el registro del evento, los registros relacionados a su alrededor (mismo actor o mismo monto, " +
+  "cercanos en el tiempo) y los pasajes de política relevantes (recuperados). " +
+  "Cuando una política trata sobre un par de eventos, como una iniciación y una aprobación, usa los " +
+  "registros relacionados para verificarla: compara los actores, los montos y el orden. " +
   "Responde en español. Fundamenta cada afirmación en los pasajes y cítalos por su etiqueta [n]. Si los " +
-  "pasajes no cubren algún punto, dilo en lugar de inventar política. Termina con un veredicto de una línea " +
+  "pasajes no cubren algún punto, dilo en lugar de inventar política. Di que falta un registro solo si no " +
+  "aparece entre los registros relacionados mostrados; si no, di qué habría que consultar. " +
+  "Termina con un veredicto de una línea " +
   "usando EXACTAMENTE uno de estos tres tokens en inglés y en mayúsculas, sin traducirlos: " +
   "CONSISTENT, INCONSISTENT, o NEEDS REVIEW.";
 
@@ -20,6 +25,8 @@ export const DEFAULT_QUESTION =
 
 export const LABELS = {
   record: (collection: string) => `REGISTRO DEL EVENTO (de ${collection}):`,
+  related: "REGISTROS RELACIONADOS (mismo actor o monto, dentro de un día):",
+  noneRelated: "(ninguno encontrado)",
   passages: "PASAJES DE POLÍTICA:",
   question: "PREGUNTA:",
 } as const;

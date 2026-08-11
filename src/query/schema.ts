@@ -3,6 +3,37 @@
  * so it generates better MongoDB pipelines. This is a PROMPT AID, not a gate:
  * it improves query quality; it does not validate or restrict anything.
  *
+ * ---------------------------------------------------------------------------
+ * ADAPTING THIS FILE TO YOUR DATA
+ *
+ * This is the highest-leverage file for a structured or hybrid team. The model
+ * writes its pipeline from this text alone; it never sees your documents. A
+ * vague description here produces confidently wrong answers, which is the
+ * failure mode that costs the most time to notice.
+ *
+ * Replace ACTIVITY_EVENTS_DESCRIPTION with your own, and cover five things:
+ *
+ * 1. One line saying what a single document IS. "One document per support
+ *    ticket" tells the model whether to count documents or group them.
+ * 2. Every field the model may need, with its type. Call out Date fields and
+ *    anything stored differently from how people say it: cents vs dollars,
+ *    seconds vs milliseconds, ids vs display names.
+ * 3. Enum values verbatim. The model cannot guess that you write "IN_PROGRESS"
+ *    and not "in progress", and a wrong literal silently matches nothing.
+ * 4. Guidance mapping the questions you actually expect to the fields that
+ *    answer them. "Open tickets" means status in X and Y, not resolvedAt null.
+ *    Two or three of these are worth more than any amount of field detail.
+ * 5. The traps. Anything where the obvious pipeline is wrong: soft-deleted rows
+ *    that must be filtered out, a status that looks final but is not, a field
+ *    that is null for a whole class of records.
+ *
+ * Write it for a competent new colleague who has never seen your data. If a
+ * sentence would not help them, it will not help the model.
+ *
+ * The Phase 1 prompts have Claude Code write this for you. Read what it wrote:
+ * it can infer 1 through 3 from your data, but only your team knows 4 and 5.
+ * ---------------------------------------------------------------------------
+ *
  * The enums here are the single source of truth, imported by the synthetic data
  * generator so the data and the description never drift.
  *
@@ -70,5 +101,8 @@ Guidance for pipelines:
  */
 export function describeCollection(name: string): string {
   if (name === "activity_events") return ACTIVITY_EVENTS_DESCRIPTION;
+  // Falling through to this generic note means the model is guessing at your
+  // fields. It usually still answers, which is exactly why this is easy to miss.
+  // Register your collection above, following the checklist at the top.
   return `Collection: ${name}\n(No schema description registered. Infer fields and types from the question; prefer a conservative read-only pipeline.)`;
 }

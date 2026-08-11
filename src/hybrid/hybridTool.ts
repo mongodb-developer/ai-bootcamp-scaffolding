@@ -19,6 +19,47 @@ import { JUDGMENT_SYSTEM, DEFAULT_QUESTION, LABELS } from "./prompts/index";
  * structured records and unstructured policy together.
  */
 
+/** How far either side of the subject event to look for related records. */
+const RELATED_WINDOW_MS = 24 * 60 * 60 * 1000;
+const RELATED_LIMIT = 8;
+
+/**
+ * Find the records that plausibly belong to the same real-world transaction as
+ * the subject: same actor, or same amount, within a day either side. Adapt this
+ * to your own data; it is the one piece of `assess` that encodes what "related"
+ * means in your domain.
+ */
+async function findRelatedRecords(record: Document): Promise<Document[]> {
+  const cfg = getConfig();
+  const db = await getDb();
+
+  const at = record.timestamp instanceof Date ? record.timestamp : null;
+  const sameTransaction: Filter<Document>[] = [{ userId: record.userId }];
+  if (typeof record.amount === "number" && record.amount > 0) {
+    sameTransaction.push({ amount: record.amount });
+  }
+
+  const filter: Filter<Document> = {
+    _id: { $ne: record._id },
+    $or: sameTransaction,
+    ...(at
+      ? {
+          timestamp: {
+            $gte: new Date(at.getTime() - RELATED_WINDOW_MS),
+            $lte: new Date(at.getTime() + RELATED_WINDOW_MS),
+          },
+        }
+      : {}),
+  };
+
+  return db
+    .collection(cfg.EVENTS_COLLECTION)
+    .find(filter)
+    .sort({ timestamp: 1 })
+    .limit(RELATED_LIMIT)
+    .toArray();
+}
+
 export const assess = tool(
   async ({ subjectId, question }): Promise<string> => {
     const cfg = getConfig();
@@ -35,6 +76,13 @@ export const assess = tool(
 
     const focus = question?.trim() || DEFAULT_QUESTION;
 
+    // Leg 1b: correlated records. Policies like dual control are about a PAIR of
+    // events, so judging one record alone can only ever hedge. Pull the handful
+    // of events that plausibly belong to the same transaction: same actor or
+    // same amount, close in time. This heuristic is the obvious thing to adapt
+    // to your own schema; "related" means something different in every domain.
+    const related = await findRelatedRecords(record);
+
     // Leg 2: retrieval. Seed the query with the record's salient fields so the
     // most relevant policy passages surface.
     const retrievalQuery = `${focus} action=${String(record.action)} amount=${String(record.amount)} channel=${String(record.channel)} status=${String(record.status)}`;
@@ -48,6 +96,7 @@ export const assess = tool(
     const system = new SystemMessage(JUDGMENT_SYSTEM);
     const human = new HumanMessage(
       `${LABELS.record(cfg.EVENTS_COLLECTION)}\n${JSON.stringify(record, null, 2)}\n\n` +
+        `${LABELS.related}\n${related.length > 0 ? JSON.stringify(related, null, 2) : LABELS.noneRelated}\n\n` +
         `${LABELS.passages}\n${formatPassages(passages)}\n\n` +
         `${LABELS.question} ${focus}`,
     );

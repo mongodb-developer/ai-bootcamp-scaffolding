@@ -65,7 +65,8 @@ on the existing bank generator:
    plus my consistency rules before returning; if any assertion fails, throw so load stops.
    Export the expectations so scripts/verify.ts can check them.
 3. Update the plain-language description in src/query/schema.ts to match my fields, types,
-   enums, and units, with guidance on how to answer my common questions.
+   enums, and units. Follow the five-point checklist in that file's header comment; the
+   traps and the question-to-field guidance matter more than the field list.
 4. Update EVENTS_COLLECTION in .env if the collection name differs.
 Keep synthetic data only, and do not touch the model client, credentials, or the graph.
 Run npm run typecheck, then walk me through npm run load.
@@ -83,7 +84,8 @@ or quantities are in [UNITS].
    call "[YOUR SUPERLATIVE, e.g. oldest open ticket]" really is, and that any totals add
    up). Export expectations the verify script can check.
 2. Update the plain-language description in src/query/schema.ts to match our fields,
-   types, and enums, with guidance on how to answer our common questions.
+   types, and enums. Follow the five-point checklist in that file's header comment; the
+   traps and the question-to-field guidance matter more than the field list.
 3. Update EVENTS_COLLECTION in .env if we renamed it.
 Run npm run typecheck, then walk me through npm run load.
 ```

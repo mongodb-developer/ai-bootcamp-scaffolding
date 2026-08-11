@@ -61,7 +61,7 @@ El scaffold trae una herramienta funcionando por cada vía (`knowledge_base_sear
 | Los documentos de tu base de conocimiento | `data/sample/kb/` (+ `data/load.ts` si tu formato es distinto) |
 | Tus datos estructurados | `data/sample/activity_events.ts` (el generador) |
 | Datos estructurados desde un esquema + unas muestras (sin exportar) | `data/mock-input/collection.md`, luego la Opción A en `prompts/es/phase-1-foundation.md` |
-| Cómo la herramienta de consulta entiende tus campos | `src/query/schema.ts` |
+| Cómo la herramienta de consulta entiende tus campos | `src/query/schema.ts` (lista en su encabezado) |
 | Una nueva herramienta de negocio | copia `src/tools/exampleBusinessTool.ts` y regístrala en `src/tools/registry.ts` |
 | Qué recuerda el agente sobre un usuario | `src/tools/memoryTools.ts` + `src/memory/store.ts` |
 | Nombres de colecciones, ajuste de recuperación/consulta | `.env` (ver la tabla de variables en `README.md`) |

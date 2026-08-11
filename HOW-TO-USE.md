@@ -52,7 +52,7 @@ The scaffold ships one working tool per leg (`knowledge_base_search`, `structure
 | Your knowledge base documents | `data/sample/kb/` (+ `data/load.ts` if your format differs) |
 | Your structured data | `data/sample/activity_events.ts` (the generator) |
 | Structured data from a schema + a few samples (no export) | `data/mock-input/collection.md`, then Option A in `prompts/en/phase-1-foundation.md` |
-| How the query tool understands your fields | `src/query/schema.ts` |
+| How the query tool understands your fields | `src/query/schema.ts` (checklist in its header) |
 | A new business tool | copy `src/tools/exampleBusinessTool.ts`, then register in `src/tools/registry.ts` |
 | What the agent remembers about a user | `src/tools/memoryTools.ts` + `src/memory/store.ts` |
 | The language the agent answers in | `AGENT_LANGUAGE` in `.env` (`en` or `es`), which selects `src/agent/prompts/en.ts` or `es.ts` |

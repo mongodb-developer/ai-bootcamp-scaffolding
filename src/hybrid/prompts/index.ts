@@ -16,6 +16,8 @@ type AssessPromptSet = {
   DEFAULT_QUESTION: string;
   LABELS: {
     record: (collection: string) => string;
+    related: string;
+    noneRelated: string;
     passages: string;
     question: string;
   };
