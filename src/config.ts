@@ -20,6 +20,8 @@ const booleanish = z
   .pipe(z.enum(["true", "false", "1", "0", "yes", "no", ""]))
   .transform((v) => v === "true" || v === "1" || v === "yes");
 
+const LanguageSchema = z.enum(["en", "es"]).default("en");
+
 const ConfigSchema = z.object({
   // MongoDB Atlas
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
@@ -36,7 +38,7 @@ const ConfigSchema = z.object({
   // shipped env.example sets "es" for the Spanish delivery, so a participant
   // who copies it gets Spanish without editing anything. That split is
   // deliberate, not an inconsistency.
-  AGENT_LANGUAGE: z.enum(["en", "es"]).default("en"),
+  AGENT_LANGUAGE: LanguageSchema,
 
   // Long-term memory store (cross-thread, keyed by user). Distinct from the
   // per-thread checkpointer. MEMORY_TTL_SECONDS = 0 disables expiry.
@@ -95,4 +97,21 @@ export function getConfig(): Config {
 
   cached = parsed.data;
   return cached;
+}
+
+/**
+ * Resolve AGENT_LANGUAGE alone, without validating the rest of the config.
+ *
+ * The three localised prompt folders select their language at module scope, and
+ * module bodies run at import time, before main() can await
+ * bootstrapCredentials(). Calling getConfig() there would validate AWS_* and
+ * VOYAGE_API_KEY while they are still unminted and crash on startup. Picking a
+ * language needs no credentials, so it gets its own narrow read.
+ */
+export function getLanguage(): Config["AGENT_LANGUAGE"] {
+  const parsed = LanguageSchema.safeParse(process.env.AGENT_LANGUAGE);
+  if (!parsed.success) {
+    throw new Error(`Invalid AGENT_LANGUAGE: expected "en" or "es".`);
+  }
+  return parsed.data;
 }
